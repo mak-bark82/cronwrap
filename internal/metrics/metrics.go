@@ -42,6 +42,19 @@ func (c *Collector) All() []JobResult {
 	return out
 }
 
+// ForJob returns a copy of all recorded results for the given job name.
+func (c *Collector) ForJob(name string) []JobResult {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	var out []JobResult
+	for _, r := range c.results {
+		if r.JobName == name {
+			out = append(out, r)
+		}
+	}
+	return out
+}
+
 // Summary returns aggregate statistics across all recorded results.
 func (c *Collector) Summary() Summary {
 	c.mu.Lock()
