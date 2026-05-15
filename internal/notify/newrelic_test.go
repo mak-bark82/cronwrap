@@ -75,3 +75,15 @@ func TestNewRelicNotifier_Notify_InvalidURL(t *testing.T) {
 		t.Fatal("expected error for invalid URL")
 	}
 }
+
+func TestNewRelicNotifier_Notify_ServerError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer ts.Close()
+
+	n := notify.NewNewRelicNotifierWithClient("key", ts.URL, ts.Client())
+	if err := n.Notify("job", nil); err == nil {
+		t.Fatal("expected error for 500 Internal Server Error status")
+	}
+}
