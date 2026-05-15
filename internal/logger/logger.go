@@ -72,6 +72,11 @@ func (l *Logger) JobExhausted(totalAttempts int, lastErr error) {
 	l.Error(fmt.Sprintf("job exhausted all %d attempt(s): %v", totalAttempts, lastErr))
 }
 
+// JobSkipped logs that a job execution was skipped, along with the reason.
+func (l *Logger) JobSkipped(reason string) {
+	l.Warn(fmt.Sprintf("job skipped: %s", reason))
+}
+
 func (l *Logger) log(level Level, msg string) {
 	timestamp := time.Now().UTC().Format(time.RFC3339)
 	fmt.Fprintf(l.out, "%s [%s] job=%s %s\n", timestamp, levelNames[level], l.jobName, msg)
